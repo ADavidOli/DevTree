@@ -5,9 +5,13 @@ const router = Router();
 
 
 // ROUTING
-router.get('/', (req, res)=>{
-    res.send('hola');
-})
+router.post('/auth/register', (req, res)=>{
+
+    console.log(req.body);
+    res.json({
+        msg:'estás en register'
+    })
+});
 
 router.get('/nosotros', (req, res)=>{
     res.send('nosotros');
