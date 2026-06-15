@@ -1,5 +1,16 @@
 import mongoose, { Schema } from "mongoose";
 
+/*
+    utiliza genercis para poder utilizar la interface en base del modelo a mongoose
+*/
+
+interface IUser {
+    name: string
+    email: string
+    password: string
+}
+
+
 // definiendo scheemma
 const userScheema = new Schema({
     nombre: {
@@ -21,5 +32,5 @@ const userScheema = new Schema({
 
 });
 
-const User = mongoose.model('User', userScheema);
+const User = mongoose.model<IUser>('User', userScheema);
 export default User;

@@ -1,17 +1,11 @@
 import { Router } from "express";
-
+import { register } from "../controllers/RegisterController";
 
 const router = Router();
 
 
 // ROUTING
-router.post('/auth/register', (req, res)=>{
-
-    console.log(req.body);
-    res.json({
-        msg:'estás en register'
-    })
-});
+router.post('/auth/register',register);
 
 router.get('/nosotros', (req, res)=>{
     res.send('nosotros');
