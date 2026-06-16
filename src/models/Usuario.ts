@@ -20,7 +20,7 @@ const userScheema = new Schema({
         lowercase: true,
         unique: true
    },
-    nombre: {
+    name: {
         required: true,
         type: String,
         trim: true,

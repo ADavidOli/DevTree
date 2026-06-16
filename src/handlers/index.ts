@@ -1,23 +1,23 @@
 // arquitectura pequeña para aplicaciones pequeños. los handlers vienen siendo lo mismo que los controllers.
 import User from "../models/Usuario";
 import type { Request, Response } from "express";
-import { hashpassword } from "../utils/auth";
+import { checkPassword, hashpassword } from "../utils/auth";
 import slug from "slug";
 import { validationResult } from "express-validator";
 
 // asignandole el type nativo de request y response.
 export const CreateAccount = async (req: Request, res: Response) => {
-    
+
     // validacion desde el route con express validator
     let errors = validationResult(req);
-    if(!errors.isEmpty()){
+    if (!errors.isEmpty()) {
         return res.status(400).json({
             errors: errors.array()
         })
     }
-    
-    
-    
+
+
+
     const { email, password } = req.body;
     const userExists = await User.findOne({ email });
 
@@ -29,7 +29,7 @@ export const CreateAccount = async (req: Request, res: Response) => {
         })
     }
     const handle = slug(req.body.handle, '');
-    const handleExists = await User.findOne({handle});
+    const handleExists = await User.findOne({ handle });
     if (handleExists) {
         const error = new Error('nombre de usuario no disponible');
 
@@ -49,5 +49,33 @@ export const CreateAccount = async (req: Request, res: Response) => {
     res.status(201).json({
         msg: 'Usuario registrado correctamente'
     })
+
+}
+
+
+export const login = async (req: Request, res: Response) => {
+
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    // verificar que el usuario ingresado no exista en la base de datos
+    if (!user) {
+        const error = new Error('el usuario no está registrado');
+
+        return res.status(404).json({
+            msg: error.message,
+        })
+    }
+    //comprobando el password
+    const ispasswordCorrect = await checkPassword(password, user.password);
+    if (!ispasswordCorrect) {
+        const error = new Error('password incorrecto');
+
+        return res.status(401).json({
+            msg: error.message,
+        })
+    }
+
+    res.send('autenticado')
+
 
 }
