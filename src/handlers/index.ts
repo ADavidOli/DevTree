@@ -1,11 +1,24 @@
 // arquitectura pequeña para aplicaciones pequeños. los handlers vienen siendo lo mismo que los controllers.
 import User from "../models/Usuario";
+import type { Request, Response } from "express";
 
-export const CreateAccount = async (req, res) => {
-    const user = new User(req.body);
-    await user.save();
+// asignandole el type nativo de request y response.
+export const CreateAccount = async (req: Request, res: Response) => {
+    const { email } = req.body;
+    const userExists = await User.findOne({ email });
 
-    res.json({
-        msg: 'Usuario registrado correctamente'
-    })
+    if (userExists) {
+        const error = new Error('el usuario ya esta registrado');
+        
+        return res.status(409).json({
+            msg: error.message,
+        })
+    } else {
+        const user = new User(req.body);
+        await user.save();
+
+        res.status(201).json({
+            msg: 'Usuario registrado correctamente'
+        })
+    }
 }
