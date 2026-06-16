@@ -1,3 +1,4 @@
+// utilizada para programar en ts pero compilas en js
 {
     "compilerOptions": {
         "outDir": "./dist",
