@@ -5,6 +5,7 @@ import { checkPassword, hashpassword } from "../utils/auth";
 import slug from "slug";
 import { validationResult } from "express-validator";
 import { handleInputError } from "../middlewares/validation";
+import { generateJWT } from "../utils/jwt";
 
 // asignandole el type nativo de request y response.
 export const CreateAccount = async (req: Request, res: Response) => {
@@ -64,6 +65,7 @@ export const login = async (req: Request, res: Response) => {
             msg: error.message,
         })
     }
+    generateJWT(user);
 
     res.send('autenticado')
 
