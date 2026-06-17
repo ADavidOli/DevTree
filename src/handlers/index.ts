@@ -65,9 +65,9 @@ export const login = async (req: Request, res: Response) => {
             msg: error.message,
         })
     }
-    generateJWT(user);
-
-    res.send('autenticado')
+    const token = generateJWT({id: user.id});
+    
+    res.send(token);
 
 
 }
