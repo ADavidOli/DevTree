@@ -4,19 +4,10 @@ import type { Request, Response } from "express";
 import { checkPassword, hashpassword } from "../utils/auth";
 import slug from "slug";
 import { validationResult } from "express-validator";
+import { handleInputError } from "../middlewares/validation";
 
 // asignandole el type nativo de request y response.
 export const CreateAccount = async (req: Request, res: Response) => {
-
-    // validacion desde el route con express validator
-    let errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({
-            errors: errors.array()
-        })
-    }
-
-
 
     const { email, password } = req.body;
     const userExists = await User.findOne({ email });
@@ -54,7 +45,6 @@ export const CreateAccount = async (req: Request, res: Response) => {
 
 
 export const login = async (req: Request, res: Response) => {
-
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     // verificar que el usuario ingresado no exista en la base de datos
