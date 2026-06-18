@@ -1,13 +1,14 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 /*
     utiliza genercis para poder utilizar la interface en base del modelo a mongoose
 */
 
-export interface IUser {
+export interface IUser extends Document {
     name: string
     email: string
     password: string
     handle: string
+    description: string
 }
 
 
@@ -35,6 +36,10 @@ const userScheema = new Schema({
         required: true,
         type: String,
         trim: true
+    },
+    description: {
+        type: String,
+        default: ''
     }
 
 });
