@@ -3,7 +3,7 @@ import mongoose, { Schema } from "mongoose";
     utiliza genercis para poder utilizar la interface en base del modelo a mongoose
 */
 
-interface IUser {
+export interface IUser {
     name: string
     email: string
     password: string

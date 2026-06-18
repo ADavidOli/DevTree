@@ -6,7 +6,6 @@ export const corsConfig:CorsOptions = {
     // origin es de donde se está enviando la peticion
     origin: function(origin, callback){
 
-        console.log(`origin recibido: ${origin}`,)
 
 
         // creando lista de dominios permitidos para que funcione desde herramientas de api y desde el frontend

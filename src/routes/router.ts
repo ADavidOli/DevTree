@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { body } from "express-validator";
 // import { register } from "../controllers/RegisterController";
-import { CreateAccount, login } from "../handlers";
+import { CreateAccount, getUser, login } from "../handlers";
 import { handleInputError } from "../middlewares/validation";
+import { authenticate } from "../middlewares/auth";
 
 const router = Router();
 
@@ -22,6 +23,8 @@ router.post('/auth/login',
     body('email').isEmail().withMessage('email no valido'),
     handleInputError,
     login);
+
+router.get('/user', authenticate,getUser);
 
 
 export default router;
