@@ -3,11 +3,12 @@ import User from "../models/Usuario";
 import type { Request, Response } from "express";
 import { checkPassword, hashpassword } from "../utils/auth";
 import slug from "slug";
-import { validationResult } from "express-validator";
+import { Result, validationResult } from "express-validator";
 import { handleInputError } from "../middlewares/validation";
 import { generateJWT } from "../utils/jwt";
 import cloudinary from "../config/cloudinary";
 import formidable from 'formidable';
+import {v4 as uuid }from 'uuid';
 
 // asignandole el type nativo de request y response.
 export const CreateAccount = async (req: Request, res: Response) => {
@@ -110,9 +111,19 @@ export const uploadImage = async (req: Request, res: Response) => {
     try {
         // preparando objeto reques para la subida de archivos
         form.parse(req, (error, fields, files) => {
+
+
             // console.log(files.file[0].filepath);
-            cloudinary.uploader.upload(files.file[0].filepath, {}, async function(error, result) {
-                console.log(result);
+            cloudinary.uploader.upload(files.file[0].filepath, { public_id: uuid()}, async function (error, result) {
+                if (error) {
+                    const error = new Error('No se pudo subir la imagen');
+                    return res.status(500).json({ msg: error.message });
+                }
+                if (result) {
+                    req.user.image = result.secure_url
+                    await req.user.save();
+                    res.json({image: result.secure_url});
+                }
             })
         })
 
