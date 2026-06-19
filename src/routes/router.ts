@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { body } from "express-validator";
 // import { register } from "../controllers/RegisterController";
-import { CreateAccount, getUser, login, updateProfile } from "../handlers";
+import { CreateAccount, getUser, login, uploadImage, updateProfile } from "../handlers";
 import { handleInputError } from "../middlewares/validation";
 import { authenticate } from "../middlewares/auth";
 
@@ -31,6 +31,10 @@ router.patch('/user',
     body('description').notEmpty().withMessage('la descripcion no puede ir vacia'),
     handleInputError,
     authenticate, updateProfile);
+
+
+// cargando las imagenes.
+router.post('/user/image', authenticate, uploadImage)
 
 
 export default router;
