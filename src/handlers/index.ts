@@ -8,7 +8,7 @@ import { handleInputError } from "../middlewares/validation";
 import { generateJWT } from "../utils/jwt";
 import cloudinary from "../config/cloudinary";
 import formidable from 'formidable';
-import {v4 as uuid }from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 // asignandole el type nativo de request y response.
 export const CreateAccount = async (req: Request, res: Response) => {
@@ -81,7 +81,7 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const updateProfile = async (req: Request, res: Response) => {
     try {
-        const { description } = req.body;
+        const { description, links } = req.body;
         const handle = slug(req.body.handle, '');
         const handleExist = await User.findOne({ handle });
         // si es un handle existente y es un correo diferente al que esta actualizando
@@ -92,6 +92,7 @@ export const updateProfile = async (req: Request, res: Response) => {
         // actualizar datos del usuario.
         req.user.description = description;
         req.user.handle = handle;
+        req.user.links = links;
 
         // guardar
         await req.user.save();
@@ -114,7 +115,7 @@ export const uploadImage = async (req: Request, res: Response) => {
 
 
             // console.log(files.file[0].filepath);
-            cloudinary.uploader.upload(files.file[0].filepath, { public_id: uuid()}, async function (error, result) {
+            cloudinary.uploader.upload(files.file[0].filepath, { public_id: uuid() }, async function (error, result) {
                 if (error) {
                     const error = new Error('No se pudo subir la imagen');
                     return res.status(500).json({ msg: error.message });
@@ -122,11 +123,29 @@ export const uploadImage = async (req: Request, res: Response) => {
                 if (result) {
                     req.user.image = result.secure_url
                     await req.user.save();
-                    res.json({image: result.secure_url});
+                    res.json({ image: result.secure_url });
                 }
             })
         })
 
+    } catch (e) {
+        const error = new Error('Hubo un error');
+        return res.status(500).json({ msg: error.message });
+    }
+}
+
+
+export const getUserByHandle = async (req: Request, res: Response) => {
+    try {
+        // extraemos de params
+        const {handle} = req.params;
+        // validar que existe el handle.
+        const usuario = await User.findOne({handle}).select('-_id -__v -email -password');
+        if(!usuario){
+            const error = new Error('El usuario no existe');
+            res.status(404).json({msg: error.message});
+        }
+        res.json(usuario);
     } catch (e) {
         const error = new Error('Hubo un error');
         return res.status(500).json({ msg: error.message });
