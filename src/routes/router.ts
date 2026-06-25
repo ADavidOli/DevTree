@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { body } from "express-validator";
 // import { register } from "../controllers/RegisterController";
-import { CreateAccount, getUser, login, uploadImage, updateProfile, getUserByHandle } from "../handlers";
+import { CreateAccount, getUser, login, uploadImage, updateProfile, getUserByHandle, searchByHandle } from "../handlers";
 import { handleInputError } from "../middlewares/validation";
 import { authenticate } from "../middlewares/auth";
 
@@ -33,6 +33,10 @@ router.patch('/user',
     authenticate, updateProfile);
 
 router.get('/:handle',getUserByHandle)
+
+router.post('/search', 
+    body('handle').notEmpty().withMessage('el handle no puede ir vacio'),
+    searchByHandle);
 
 
 // cargando las imagenes.

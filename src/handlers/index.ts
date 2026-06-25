@@ -138,14 +138,33 @@ export const uploadImage = async (req: Request, res: Response) => {
 export const getUserByHandle = async (req: Request, res: Response) => {
     try {
         // extraemos de params
-        const {handle} = req.params;
+        const { handle } = req.params;
         // validar que existe el handle.
-        const usuario = await User.findOne({handle}).select('-_id -__v -email -password');
-        if(!usuario){
+        const usuario = await User.findOne({ handle }).select('-_id -__v -email -password');
+        if (!usuario) {
             const error = new Error('El usuario no existe');
-            res.status(404).json({msg: error.message});
+            res.status(404).json({ msg: error.message });
         }
         res.json(usuario);
+    } catch (e) {
+        const error = new Error('Hubo un error');
+        return res.status(500).json({ msg: error.message });
+    }
+}
+
+
+export const searchByHandle = async (req: Request, res: Response) => {
+
+    try {
+        const { handle } = req.body;
+        const usuario = await User.findOne({ handle });
+        if (usuario) {
+            const error = new Error(`el ${handle} ya está registrado`);
+            res.status(409).json({ msg: error.message });
+        }
+        res.send(`${handle} si está disponible`);
+
+
     } catch (e) {
         const error = new Error('Hubo un error');
         return res.status(500).json({ msg: error.message });
