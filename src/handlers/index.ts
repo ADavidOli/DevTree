@@ -159,10 +159,10 @@ export const searchByHandle = async (req: Request, res: Response) => {
         const { handle } = req.body;
         const usuario = await User.findOne({ handle });
         if (usuario) {
-            const error = new Error(`el ${handle} ya está registrado`);
+            const error = new Error(`el ${handle} registrado, intenta con otro`);
             res.status(409).json({ msg: error.message });
         }
-        res.send(`${handle} si está disponible`);
+        res.send(`${handle} disponible ${' '}`);
 
 
     } catch (e) {
