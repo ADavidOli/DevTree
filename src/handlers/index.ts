@@ -62,8 +62,8 @@ export const login = async (req: Request, res: Response) => {
     //comprobando el password
     const ispasswordCorrect = await checkPassword(password, user.password);
     if (!ispasswordCorrect) {
+        
         const error = new Error('password incorrecto');
-
         return res.status(401).json({
             msg: error.message,
         })
@@ -89,7 +89,7 @@ export const updateProfile = async (req: Request, res: Response) => {
             const error = new Error('El handle ya existe');
             return res.status(409).json({ msg: error.message });
         }
-        // actualizar datos del usuario.
+        // actualizar datos del usuario
         req.user.description = description;
         req.user.handle = handle;
         req.user.links = links;
